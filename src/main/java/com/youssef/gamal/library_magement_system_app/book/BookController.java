@@ -33,7 +33,7 @@ public class BookController {
                             content = {
                                     @Content(
                                             mediaType = "application/json",
-                                            schema = @Schema(implementation = AddBookRequestBody.class)
+                                            schema = @Schema(implementation = AddBookResponseBody.class)
                                     )
                             }
                     ),
