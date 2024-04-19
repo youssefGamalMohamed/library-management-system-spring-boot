@@ -1,15 +1,14 @@
 package com.youssef.gamal.library_magement_system_app.book;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.youssef.gamal.library_magement_system_app.borrowing.Borrowing;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.Year;
+import java.util.List;
 
 @Data
 @Entity
@@ -31,4 +30,7 @@ public class Book {
     private String isbn;
 
     private String author;
+
+    @OneToMany(mappedBy = "book" , cascade = CascadeType.ALL)
+    private List<Borrowing> borrowings;
 }
