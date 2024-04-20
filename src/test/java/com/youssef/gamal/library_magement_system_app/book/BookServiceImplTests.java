@@ -201,4 +201,34 @@ public class BookServiceImplTests {
         Assertions.assertThat(book).isNotNull();
         Assertions.assertThat(book).isEqualTo(bookToUpdate);
     }
+
+    @Test
+    void BookServiceImpl_UpdateByNonExistsId_ReturnsVoid() {
+        //Arrange
+        Book book = Book.builder()
+                .id(1L)
+                .title("Book 1")
+                .author("Author 1")
+                .description("Description 1")
+                .isbn("ISBN 1")
+                .publicationYear(Year.of(2020))
+                .build();
+        when(bookRepo.findById(any(Long.class)))
+                .thenReturn(Optional.empty());
+
+
+        // Act
+        System.out.println("book Before update = " + book);
+
+        Book bookToUpdate = null ;
+        try {
+            bookToUpdate = bookRepo.findById(2L).get();
+        }
+        catch (NoSuchElementException ex) {
+
+        }
+
+        // Assert
+        Assertions.assertThat(bookToUpdate).isNull();
+    }
 }
