@@ -115,13 +115,6 @@ public class BookControllerTests {
                 .title("Title 1")
                 .build();
 
-        FindBookByIdResponseBody responseBody = FindBookByIdResponseBody.builder()
-                .isbn(book.getIsbn())
-                .publicationYear(String.valueOf(book.getPublicationYear().getValue()))
-                .description(book.getDescription())
-                .author(book.getAuthor())
-                .title(book.getTitle())
-                .build();
         when(bookServiceImpl.findById(bookId)).thenReturn(book);
         when(bookServiceImpl.findById(2L)).thenThrow(new NoSuchElementException("Book not found"));
 
