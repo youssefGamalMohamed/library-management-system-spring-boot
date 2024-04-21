@@ -103,7 +103,7 @@ public class BookControllerTests {
 
 
     @Test
-    public void BookController_FindByIdWithNonExistentId_ReturnResponseCode200WithResponseOfBook() throws Exception {
+    public void BookController_FindByIdWithNonExistentId_ReturnNotFound404() throws Exception {
         // Arrange
         long bookId = 1L;
         Book book = Book.builder()
