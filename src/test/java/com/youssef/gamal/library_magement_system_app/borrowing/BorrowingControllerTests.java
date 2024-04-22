@@ -118,4 +118,32 @@ public class BorrowingControllerTests {
                 .andExpect(jsonPath("$.delayFeesMustBePaid").value(0));
     }
 
+
+
+    @Test
+    public void testReturnBook_NotFound() throws Exception {
+        // Mock the borrowingServiceInterface method to throw a NoSuchElementException
+        given(borrowingServiceInterface.returnBook(anyLong(), anyLong(), any(LocalDate.class)))
+                .willThrow(new NoSuchElementException());
+
+        Long bookId = 123L;
+        Long patronId = 456L;
+        LocalDate returnDate = LocalDate.of(2025, 1, 1);
+        ReturnBookRequestBody requestBody = ReturnBookRequestBody.builder()
+                .returnDate(returnDate)
+                .build();
+
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+        mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS); // to handle java time module in ObjectMapper
+
+        // Perform the PUT request
+        ResultActions result = mockMvc.perform(put("/v1/return/" + bookId + "/patron/" + patronId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(requestBody)));
+
+        // Assert
+        result.andExpect(status().isNotFound());
+    }
+
 }
