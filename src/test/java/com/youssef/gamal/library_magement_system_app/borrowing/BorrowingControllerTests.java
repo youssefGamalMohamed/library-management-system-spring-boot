@@ -21,11 +21,12 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.time.LocalDate;
-import java.time.Year;
+
 import java.util.NoSuchElementException;
 
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(controllers = BorrowingController.class)
@@ -91,4 +92,30 @@ public class BorrowingControllerTests {
         // Assert
         result.andExpect(status().isNotFound());
     }
+
+    @Test
+    public void testReturnBook_Successful() throws Exception {
+        // Mock the borrowingServiceInterface method
+        when(borrowingServiceInterface.returnBook(anyLong(), anyLong(), any(LocalDate.class)))
+                .thenReturn(0);
+
+        Long bookId = 123L;
+        Long patronId = 456L;
+        LocalDate returnDate = LocalDate.of(2025, 1, 1);
+        ReturnBookRequestBody requestBody = ReturnBookRequestBody.builder()
+                .returnDate(returnDate)
+                .build();
+
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+        mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS); // to handle java time module in ObjectMapper
+
+        // Perform the PUT request
+        mockMvc.perform(put("/v1/return/"+ bookId + "/patron/" + patronId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(requestBody)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.delayFeesMustBePaid").value(0));
+    }
+
 }
