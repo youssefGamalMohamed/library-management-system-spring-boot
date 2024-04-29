@@ -9,6 +9,7 @@ import jakarta.persistence.MapsId;
 import lombok.*;
 import org.hibernate.proxy.HibernateProxy;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Objects;
 
@@ -19,7 +20,7 @@ import java.util.Objects;
 @Getter
 @Setter
 @ToString
-public class Borrowing {
+public class Borrowing implements Serializable {
 
     @EmbeddedId
     private BorrowingCompositeKey borrowingCompositeKey;
