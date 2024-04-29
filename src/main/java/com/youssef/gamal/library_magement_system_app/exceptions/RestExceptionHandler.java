@@ -22,7 +22,6 @@ public class RestExceptionHandler {
     public ResponseEntity<?> handleException(Exception e) {
         log.error("Unhandled Exception = {} , Class Name of the Exception = {} ", e , e.getClass().getName());
 
-        e.printStackTrace();
         return ResponseEntity.internalServerError()
                 .build();
     }
@@ -31,7 +30,6 @@ public class RestExceptionHandler {
     @ExceptionHandler(NoSuchElementException.class)
     public ResponseEntity<?> handleNoSuchFieldException(NoSuchElementException e) {
         log.error("NoSuchElementException = ", e);
-        e.printStackTrace();
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .build();
     }
@@ -40,7 +38,6 @@ public class RestExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<?> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
         log.error("MethodArgumentNotValidException = ", e);
-        e.printStackTrace();
 
         Map<String, String> errors = new HashMap<>();
         e.getBindingResult().getAllErrors().forEach(error -> {
