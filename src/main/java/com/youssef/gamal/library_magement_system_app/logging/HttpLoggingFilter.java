@@ -12,6 +12,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.util.ContentCachingResponseWrapper;
@@ -79,13 +80,18 @@ public class HttpLoggingFilter extends OncePerRequestFilter {
     }
 
     private void logResponse(ContentCachingResponseWrapper responseWrapper) throws IOException {
+        if(responseWrapper.getContentType() == null || !responseWrapper.getContentType().equals("application/json"))
+            return;
+
         Map<String, Object> headers = responseWrapper.getHeaderNames()
                 .stream()
                 .map(headerName -> Map.entry(headerName, Objects.requireNonNull(responseWrapper.getHeader(headerName))))
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
+
         String body_str = new String(responseWrapper.getContentAsByteArray());
         body_str = body_str.isBlank() ? "{}" : body_str;
+
         Map body = objectMapper.readValue(body_str, Map.class);
 
         String status_code = String.valueOf(responseWrapper.getStatus());
