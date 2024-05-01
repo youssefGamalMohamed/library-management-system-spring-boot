@@ -3,6 +3,7 @@ package com.youssef.gamal.library_magement_system_app.exceptions;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -21,8 +22,8 @@ public class RestExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<?> handleException(Exception e) {
         log.error("Unhandled Exception = {} , Class Name of the Exception = {} ", e , e.getClass().getName());
-
         return ResponseEntity.internalServerError()
+                .contentType(MediaType.APPLICATION_JSON)
                 .build();
     }
 
@@ -31,6 +32,7 @@ public class RestExceptionHandler {
     public ResponseEntity<?> handleNoSuchFieldException(NoSuchElementException e) {
         log.error("NoSuchElementException = ", e);
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .contentType(MediaType.APPLICATION_JSON)
                 .build();
     }
 
@@ -51,6 +53,7 @@ public class RestExceptionHandler {
                 .build();
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .contentType(MediaType.APPLICATION_JSON)
                 .body(errorValidationResponse);
     }
 }

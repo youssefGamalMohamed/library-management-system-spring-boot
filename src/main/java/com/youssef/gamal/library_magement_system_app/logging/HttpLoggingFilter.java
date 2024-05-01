@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.util.ContentCachingResponseWrapper;
@@ -39,10 +40,11 @@ public class HttpLoggingFilter extends OncePerRequestFilter {
     }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException, ServletException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws IOException, ServletException {
         CustomContentCachingRequestWrapper requestWrapper = new CustomContentCachingRequestWrapper(request);
         ContentCachingResponseWrapper responseWrapper = new ContentCachingResponseWrapper(response);
 
+        log.info(StringUtils.repeat('=' , 100));
         logRequest(requestWrapper);
 
         // process the request and response
@@ -50,10 +52,11 @@ public class HttpLoggingFilter extends OncePerRequestFilter {
 
         logResponse(responseWrapper);
         responseWrapper.copyBodyToResponse(); // to copy the response from the wrapper to the response
+        log.info(StringUtils.repeat('=' , 100));
+
     }
 
     private void logRequest(CustomContentCachingRequestWrapper requestWrapper) throws IOException {
-        log.info(StringUtils.repeat('=' , 100));
         String http_method = requestWrapper.getMethod();
         String url = requestWrapper.getRequestURI();
         String url_with_http_method = http_method + " " + url;
@@ -80,8 +83,15 @@ public class HttpLoggingFilter extends OncePerRequestFilter {
     }
 
     private void logResponse(ContentCachingResponseWrapper responseWrapper) throws IOException {
-        if(responseWrapper.getContentType() == null || !responseWrapper.getContentType().equals("application/json"))
+        if(responseWrapper.getContentType() == null) {
+            log.info("Response.Content-Type is null");
             return;
+        }
+
+        if(!responseWrapper.getContentType().equals(MediaType.APPLICATION_JSON.toString())) {
+            log.info("Response.Content-Type is not application/json , the actual value is " + responseWrapper.getContentType());
+            return;
+        }
 
         Map<String, Object> headers = responseWrapper.getHeaderNames()
                 .stream()
@@ -94,6 +104,7 @@ public class HttpLoggingFilter extends OncePerRequestFilter {
 
         Map body = objectMapper.readValue(body_str, Map.class);
 
+
         String status_code = String.valueOf(responseWrapper.getStatus());
 
         Map<String,Object> response_data = new HashMap<>();
@@ -101,13 +112,13 @@ public class HttpLoggingFilter extends OncePerRequestFilter {
         response_data.put("body" , body);
         response_data.put("status_code" , status_code);
 
+
         Map<String,Object> response = new HashMap<>();
         response.put("RESPONSE" , response_data);
 
         String json_response = objectMapper.writeValueAsString(response);
         log.info(json_response);
 
-        log.info(StringUtils.repeat('=' , 100));
     }
 
 }
