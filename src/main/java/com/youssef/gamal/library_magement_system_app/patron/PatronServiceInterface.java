@@ -13,5 +13,5 @@ public interface PatronServiceInterface {
 
     void deleteById(Long id);
 
-    void updateById(Long id, Patron updatedPatron);
+    Patron updateById(Long id, Patron updatedPatron);
 }
