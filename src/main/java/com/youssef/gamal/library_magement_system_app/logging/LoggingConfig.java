@@ -1,0 +1,48 @@
+package com.youssef.gamal.library_magement_system_app.logging;
+
+import org.apache.catalina.util.StringUtil;
+import org.apache.logging.log4j.util.Strings;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.zalando.logbook.*;
+import org.zalando.logbook.core.DefaultHttpLogFormatter;
+import org.zalando.logbook.core.DefaultSink;
+import org.zalando.logbook.core.StreamHttpLogWriter;
+import java.io.IOException;
+
+@Configuration
+public class LoggingConfig {
+
+    @Bean
+    public Logbook myLogbook() {
+        return Logbook.builder()
+                .sink(
+                        new DefaultSink(
+                                new CustomHttpLogFormatter(new DefaultHttpLogFormatter()),
+                            new StreamHttpLogWriter(System.out)
+                        )
+                )
+                .build();
+    }
+
+     static class CustomHttpLogFormatter implements HttpLogFormatter {
+        private final HttpLogFormatter delegate;
+
+        CustomHttpLogFormatter(HttpLogFormatter delegate) {
+            this.delegate = delegate;
+        }
+
+
+         @Override
+         public String format(Precorrelation precorrelation, HttpRequest request) throws IOException {
+             return  "\n" + Strings.repeat("=", 200) + "\n" +
+                      "REQUEST >>> \n" + delegate.format(precorrelation, request) + "\n";
+         }
+
+         @Override
+         public String format(Correlation correlation, HttpResponse response) throws IOException {
+             return "RESPONSE >>> \n" + delegate.format(correlation, response) +  "\n" + Strings.repeat("=", 200) + "\n" ;
+
+         }
+     }
+}

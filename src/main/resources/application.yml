@@ -24,7 +24,8 @@ logging:
     org:
       springframework:
         cache: trace
-        web.filter.CommonsRequestLoggingFilter: debug
+      zalando:
+        logbook: trace
 
 springdoc:
   swagger-ui:
