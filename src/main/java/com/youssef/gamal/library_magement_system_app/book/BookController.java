@@ -24,7 +24,6 @@ public class BookController {
 
     private final BookServiceInterface bookServiceInterface;
 
-
     @Operation(summary = "Add Book", description = "Add Book")
     @ApiResponses(
             value = {
