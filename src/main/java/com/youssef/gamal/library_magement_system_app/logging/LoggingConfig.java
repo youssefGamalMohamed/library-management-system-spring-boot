@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.zalando.logbook.*;
 import org.zalando.logbook.core.DefaultHttpLogFormatter;
+import org.zalando.logbook.core.DefaultHttpLogWriter;
 import org.zalando.logbook.core.DefaultSink;
 import org.zalando.logbook.core.StreamHttpLogWriter;
 import java.io.IOException;
@@ -14,12 +15,12 @@ import java.io.IOException;
 public class LoggingConfig {
 
     @Bean
-    public Logbook myLogbook() {
+    public Logbook logbookBean() {
         return Logbook.builder()
                 .sink(
                         new DefaultSink(
                                 new CustomHttpLogFormatter(new DefaultHttpLogFormatter()),
-                            new StreamHttpLogWriter(System.out)
+                                new DefaultHttpLogWriter()
                         )
                 )
                 .build();
@@ -41,7 +42,7 @@ public class LoggingConfig {
 
          @Override
          public String format(Correlation correlation, HttpResponse response) throws IOException {
-             return "RESPONSE >>> \n" + delegate.format(correlation, response) +  "\n" + Strings.repeat("=", 200) + "\n" ;
+             return "\n" + "RESPONSE >>> \n" + delegate.format(correlation, response) +  "\n" + Strings.repeat("=", 200) + "\n" ;
 
          }
      }
