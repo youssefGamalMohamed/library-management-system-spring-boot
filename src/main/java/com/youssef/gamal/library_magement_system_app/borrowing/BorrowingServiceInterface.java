@@ -5,7 +5,7 @@ import java.time.LocalDate;
 public interface BorrowingServiceInterface {
 
 
-    void borrowBook(Long bookId, Long patronId, LocalDate dateMustReturnIn);
+    Borrowing borrowBook(Long bookId, Long patronId, LocalDate dateMustReturnIn);
 
-    int returnBook(Long bookId, Long patronId, LocalDate actualReturnDate);
+    Borrowing returnBook(Long bookId, Long patronId, LocalDate actualReturnDate);
 }

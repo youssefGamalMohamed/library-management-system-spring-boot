@@ -20,8 +20,8 @@ public class PatronServiceImpl implements PatronServiceInterface {
     private final PatronRepo patronRepo;
 
     @Override
-    public Long add(Patron patron) {
-        return patronRepo.save(patron).getId();
+    public Patron add(Patron patron) {
+        return patronRepo.save(patron);
     }
 
     @Override

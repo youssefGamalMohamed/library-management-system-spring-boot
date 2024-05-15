@@ -56,12 +56,7 @@ public class BorrowingRepoTest {
 
         //Act
         Borrowing borrowing = Borrowing.builder()
-                .borrowingCompositeKey(
-                        BorrowingCompositeKey.builder()
-                                .bookId(book.getId())
-                                .patronId(patron.getId())
-                                .build()
-                )
+                .id(1L)
                 .book(book)
                 .patron(patron)
                 .borrowingDate(LocalDate.now())
@@ -72,16 +67,16 @@ public class BorrowingRepoTest {
 
         //Assert
         Assertions.assertThat(savedBorrowing).isNotNull();
-        Assertions.assertThat(savedBorrowing.getBorrowingCompositeKey().getBookId()).isNotNull();
-        Assertions.assertThat(savedBorrowing.getBorrowingCompositeKey().getBookId()).isEqualTo(book.getId());
-        Assertions.assertThat(savedBorrowing.getBorrowingCompositeKey().getPatronId()).isNotNull();
-        Assertions.assertThat(savedBorrowing.getBorrowingCompositeKey().getPatronId()).isEqualTo(patron.getId());
+        Assertions.assertThat(savedBorrowing.getBook().getId()).isNotNull();
+        Assertions.assertThat(savedBorrowing.getBook().getId()).isEqualTo(book.getId());
+        Assertions.assertThat(savedBorrowing.getPatron().getId()).isNotNull();
+        Assertions.assertThat(savedBorrowing.getPatron().getId()).isEqualTo(patron.getId());
     }
 
 
 
     @Test
-    public void BorrowingRepo_FindBorrowingByCompsiteKeyId_ReturnBorrowing() {
+    public void BorrowingRepo_FindBorrowingByBookIdAndPatronId_ReturnBorrowing() {
 
         //Arrange
         Book book = Book.builder()
@@ -100,12 +95,7 @@ public class BorrowingRepoTest {
         book = bookRepo.save(book);
         patron = patronRepo.save(patron);
         Borrowing borrowing = Borrowing.builder()
-                .borrowingCompositeKey(
-                        BorrowingCompositeKey.builder()
-                                .bookId(book.getId())
-                                .patronId(patron.getId())
-                                .build()
-                )
+                .id(1L)
                 .book(book)
                 .patron(patron)
                 .borrowingDate(LocalDate.now())
@@ -115,11 +105,11 @@ public class BorrowingRepoTest {
         Borrowing savedBorrowing = borrowingRepo.save(borrowing);
 
         //Act
-        Borrowing borrowingFound = borrowingRepo.findById(borrowing.getBorrowingCompositeKey()).get();
+        Borrowing borrowingFound = borrowingRepo.findBorrowingByPatronAndBook(patron,book).get();
 
         //Assert
         Assertions.assertThat(borrowingFound).isNotNull();
-        Assertions.assertThat(savedBorrowing.getBorrowingCompositeKey()).isEqualTo(borrowingFound.getBorrowingCompositeKey());
+        Assertions.assertThat(savedBorrowing.getId()).isEqualTo(borrowingFound.getId());
     }
 
 

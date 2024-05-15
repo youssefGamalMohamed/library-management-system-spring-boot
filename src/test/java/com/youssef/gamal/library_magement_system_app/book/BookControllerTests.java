@@ -43,7 +43,7 @@ public class BookControllerTests {
     @Test
     public void BookController_AddBook_ReturnCreated() throws Exception {
         // Arrange
-        AddBookRequestBody requestBody = AddBookRequestBody.builder()
+        BookDto requestBody = BookDto.builder()
                 .description("Description 1")
                 .author("Author 1")
                 .title("Title 1")
@@ -53,7 +53,7 @@ public class BookControllerTests {
 
         Book book = BookMapper.toEntity(requestBody);
         given(bookServiceImpl.save(ArgumentMatchers.any(Book.class)))
-                .willAnswer((invocation -> book.getId()));
+                .willAnswer((invocation -> book));
 
         // Act
         ResultActions response = mockMvc.perform(post("/v1/book")
@@ -79,9 +79,10 @@ public class BookControllerTests {
                 .author("Author 1")
                 .build();
 
-        FindBookByIdResponseBody responseBody = FindBookByIdResponseBody.builder()
+        BookDto responseBody = BookDto.builder()
+                .id(bookId)
                 .isbn(book.getIsbn())
-                .publicationYear(String.valueOf(book.getPublicationYear().getValue()))
+                .publicationYear(book.getPublicationYear())
                 .description(book.getDescription())
                 .author(book.getAuthor())
                 .title(book.getTitle())

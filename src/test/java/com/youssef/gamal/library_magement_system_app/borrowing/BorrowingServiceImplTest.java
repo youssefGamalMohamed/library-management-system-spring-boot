@@ -131,20 +131,27 @@ public class BorrowingServiceImplTest {
         LocalDate actualReturnDate = LocalDate.now().plusDays(5);
         LocalDate dateMustReturnIn = LocalDate.now().plusDays(3);
 
-        BorrowingCompositeKey borrowingId = BorrowingCompositeKey.builder()
-                .bookId(bookId)
-                .patronId(patronId)
-                .build();
 
+        Book book = Book.builder()
+                .id(bookId)
+                .build();
+        Patron patron =  Patron.builder()
+                .id(patronId)
+                .build();
         Borrowing borrowing = Borrowing.builder()
-                .borrowingCompositeKey(borrowingId)
+                .id(1L)
+                .book(book)
+                .patron(patron)
                 .dateMustReturnIn(dateMustReturnIn)
                 .build();
-
-        when(borrowingRepo.findById(borrowingId)).thenReturn(java.util.Optional.of(borrowing));
+        when(bookServiceImpl.findById(bookId)).thenReturn(book);
+        when(patronServiceImpl.findById(patronId)).thenReturn(patron);
+        when(borrowingRepo.findBorrowingByPatronAndBook(patron,book)).thenReturn(java.util.Optional.of(borrowing));
+        when(borrowingRepo.save(any(Borrowing.class))).thenReturn(borrowing);
 
         // Act
-        int delayFeesMustBePaid = borrowingServiceImpl.returnBook(bookId, patronId, actualReturnDate);
+        Borrowing returnBorrowingResult =  borrowingServiceImpl.returnBook(bookId, patronId, actualReturnDate);
+        int delayFeesMustBePaid = returnBorrowingResult.getPaidFeesAmount();
 
         // Assert
         assertEquals(2 * BOOK_DELIVERY_FEES_PER_DAY, delayFeesMustBePaid);
@@ -158,20 +165,25 @@ public class BorrowingServiceImplTest {
         LocalDate actualReturnDate = LocalDate.now().minusDays(5);
         LocalDate dateMustReturnIn = LocalDate.now().plusDays(3);
 
-        BorrowingCompositeKey borrowingId = BorrowingCompositeKey.builder()
-                .bookId(bookId)
-                .patronId(patronId)
+        Book book = Book.builder()
+                .id(bookId)
                 .build();
-
+        Patron patron =  Patron.builder()
+                .id(patronId)
+                .build();
         Borrowing borrowing = Borrowing.builder()
-                .borrowingCompositeKey(borrowingId)
+                .book(book)
+                .patron(patron)
                 .dateMustReturnIn(dateMustReturnIn)
                 .build();
 
-        when(borrowingRepo.findById(borrowingId)).thenReturn(java.util.Optional.of(borrowing));
+        when(bookServiceImpl.findById(bookId)).thenReturn(book);
+        when(patronServiceImpl.findById(patronId)).thenReturn(patron);
+        when(borrowingRepo.save(any(Borrowing.class))).thenReturn(borrowing);
+        when(borrowingRepo.findBorrowingByPatronAndBook(patron,book)).thenReturn(java.util.Optional.of(borrowing));
 
         // Act
-        int delayFeesMustBePaid = borrowingServiceImpl.returnBook(bookId, patronId, actualReturnDate);
+        int delayFeesMustBePaid = borrowingServiceImpl.returnBook(bookId, patronId, actualReturnDate).getPaidFeesAmount();
 
         // Assert
         assertEquals(0, delayFeesMustBePaid);

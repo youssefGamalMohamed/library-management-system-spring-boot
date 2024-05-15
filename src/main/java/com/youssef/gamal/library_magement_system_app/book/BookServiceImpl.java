@@ -19,8 +19,8 @@ public class BookServiceImpl implements BookServiceInterface {
     private final BookRepo bookRepo;
 
     @Override
-    public Long save(Book book) {
-        return bookRepo.save(book).getId();
+    public Book save(Book book) {
+        return bookRepo.save(book);
     }
 
 

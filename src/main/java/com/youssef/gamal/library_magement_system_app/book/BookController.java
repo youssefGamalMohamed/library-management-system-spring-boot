@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Tag(name = "Book", description = "Book API Endpoints")
@@ -32,7 +33,7 @@ public class BookController {
                             content = {
                                     @Content(
                                             mediaType = "application/json",
-                                            schema = @Schema(implementation = AddBookResponseBody.class)
+                                            schema = @Schema(implementation = BookDto.class)
                                     )
                             }
                     ),
@@ -48,9 +49,9 @@ public class BookController {
             }
     )
     @PostMapping
-    public ResponseEntity<?> add(@Valid @RequestBody AddBookRequestBody requestBody) {
-        Long bookId = bookServiceInterface.save(BookMapper.toEntity(requestBody));
-        AddBookResponseBody responseBody = BookMapper.toAddBookResponseBody(bookId);
+    public ResponseEntity<?> add(@Valid @RequestBody BookDto requestBody) {
+        Book book = bookServiceInterface.save(BookMapper.toEntity(requestBody));
+        BookDto responseBody = BookMapper.toDto(book);
         return new ResponseEntity<>(responseBody, HttpStatus.CREATED);
     }
 
@@ -63,7 +64,7 @@ public class BookController {
                             content = {
                                     @Content(
                                             mediaType = "application/json",
-                                            schema = @Schema(implementation = FindBookByIdResponseBody.class)
+                                            schema = @Schema(implementation = BookDto.class)
                                     )
                             }
                     ),
@@ -76,7 +77,7 @@ public class BookController {
     @GetMapping("/{id}")
     public ResponseEntity<?> findById(@PathVariable Long id) {
         Book book = bookServiceInterface.findById(id);
-        FindBookByIdResponseBody responseBody = BookMapper.toFindBookByIdResponseBody(book);
+        BookDto responseBody = BookMapper.toDto(book);
         return new ResponseEntity<>(responseBody, HttpStatus.OK);
     }
 
@@ -89,7 +90,7 @@ public class BookController {
                             content = {
                                     @Content(
                                             mediaType = "application/json",
-                                            schema = @Schema(implementation = FindAllBooksResponseBody.class)
+                                            schema = @Schema(implementation = BookDto.class)
                                     )
                             }
                     )
@@ -98,7 +99,10 @@ public class BookController {
     @GetMapping
     public ResponseEntity<?> findAll() {
         List<Book> books = bookServiceInterface.findAll();
-        FindAllBooksResponseBody responseBody = BookMapper.toFindAllBooksResponseBody(books);
+        List<BookDto> responseBody = books.stream()
+                .map(BookMapper::toDto)
+                .collect(Collectors.toList());
+
         return new ResponseEntity<>(responseBody, HttpStatus.OK);
     }
 
@@ -135,9 +139,9 @@ public class BookController {
     )
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateById(@PathVariable Long id, @Valid @RequestBody UpdateBookRequestBody requestBody) {
+    public ResponseEntity<?> updateById(@PathVariable Long id, @Valid @RequestBody BookDto requestBody) {
         Book book = BookMapper.toEntity(requestBody);
-        bookServiceInterface.updateById(id, book);
+        Book updatedBook = bookServiceInterface.updateById(id, book);
         return ResponseEntity.noContent()
                 .build();
     }

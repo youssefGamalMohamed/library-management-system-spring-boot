@@ -5,7 +5,7 @@ import java.util.List;
 
 public interface PatronServiceInterface {
 
-    Long add(Patron patron);
+    Patron add(Patron patron);
 
     Patron findById(Long id);
 

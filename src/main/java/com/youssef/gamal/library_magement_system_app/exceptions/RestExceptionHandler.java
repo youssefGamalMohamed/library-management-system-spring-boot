@@ -21,6 +21,7 @@ public class RestExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<?> handleException(Exception e) {
+        e.printStackTrace();
         log.error("Unhandled Exception = {} , Class Name of the Exception = {} ", e , e.getClass().getName());
         return ResponseEntity.internalServerError()
                 .contentType(MediaType.APPLICATION_JSON)

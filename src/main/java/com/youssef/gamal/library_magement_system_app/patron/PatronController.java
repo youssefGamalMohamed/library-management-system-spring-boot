@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/v1/patron")
@@ -30,7 +31,7 @@ public class PatronController {
                             responseCode = "201", description = "Book Added Successfully",
                             content = @Content(
                                     mediaType = "application/json",
-                                    schema = @Schema(implementation = AddPatronResponseBody.class)
+                                    schema = @Schema(implementation = PatronDto.class)
                             )
                     ),
                     @ApiResponse(
@@ -45,9 +46,9 @@ public class PatronController {
             }
     )
     @PostMapping
-    public ResponseEntity<?> add(@Valid @RequestBody AddPatronRequestBody requestBody) {
-        Long newPatronId = patronServiceInterface.add(PatronMapper.toEntity(requestBody));
-        AddPatronResponseBody responseBody = PatronMapper.toAddPatronResponseBody(newPatronId);
+    public ResponseEntity<?> add(@Valid @RequestBody PatronDto requestBody) {
+        Patron newSavedPatron = patronServiceInterface.add(PatronMapper.toEntity(requestBody));
+        PatronDto responseBody = PatronMapper.toDto(newSavedPatron);
         return new ResponseEntity<>(responseBody, HttpStatus.CREATED);
     }
 
@@ -60,7 +61,7 @@ public class PatronController {
                             content = {
                                     @Content(
                                             mediaType = "application/json",
-                                            schema = @Schema(implementation = FindPatronByIdResponseBody.class)
+                                            schema = @Schema(implementation = PatronDto.class)
                                     )
                             }
                     ),
@@ -72,7 +73,7 @@ public class PatronController {
     @GetMapping("/{id}")
     public ResponseEntity<?> findById(@PathVariable Long id) {
         Patron patron = patronServiceInterface.findById(id);
-        FindPatronByIdResponseBody responseBody = PatronMapper.toFindPatronByIdResponseBody(patron);
+        PatronDto responseBody = PatronMapper.toDto(patron);
         return ResponseEntity.ok(responseBody);
     }
 
@@ -84,7 +85,7 @@ public class PatronController {
                             content = {
                                     @Content(
                                             mediaType = "application/json",
-                                            schema = @Schema(implementation = FindAllPatronsResponseBody.class)
+                                            schema = @Schema(implementation = PatronDto.class)
                                     )
                             }
                     )
@@ -94,7 +95,9 @@ public class PatronController {
     @GetMapping
     public ResponseEntity<?> findAll() {
         List<Patron> patrons = patronServiceInterface.findAll();
-        FindAllPatronsResponseBody responseBody = PatronMapper.toFindAllPatronsResponseBody(patrons);
+        List<PatronDto> responseBody = patrons.stream()
+                .map(PatronMapper::toDto)
+                .collect(Collectors.toList());
         return ResponseEntity.ok(responseBody);
     }
 
@@ -130,9 +133,9 @@ public class PatronController {
             }
     )
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateById(@PathVariable Long id, @Valid @RequestBody UpdatePatronRequestBody requestBody) {
+    public ResponseEntity<?> updateById(@PathVariable Long id, @Valid @RequestBody PatronDto requestBody) {
         Patron patron = PatronMapper.toEntity(requestBody);
-        patronServiceInterface.updateById(id, patron);
+        Patron updatedPatron = patronServiceInterface.updateById(id, patron);
         return ResponseEntity.noContent()
                 .build();
     }

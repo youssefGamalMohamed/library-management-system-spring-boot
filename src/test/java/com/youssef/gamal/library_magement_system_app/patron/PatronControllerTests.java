@@ -40,7 +40,7 @@ public class PatronControllerTests {
     @Test
     public void PatronController_AddPatron_ReturnCreated() throws Exception {
         // Arrange
-        AddPatronRequestBody requestBody = AddPatronRequestBody.builder()
+        PatronDto requestBody = PatronDto.builder()
                 .email("youssef@gmail")
                 .name("youssef")
                 .address("cairo")
@@ -49,7 +49,7 @@ public class PatronControllerTests {
 
         Patron patron = PatronMapper.toEntity(requestBody);
         given(patronServiceImpl.add(ArgumentMatchers.any(Patron.class)))
-                .willAnswer((invocation -> patron.getId()));
+                .willAnswer((invocation -> patron));
 
         // Act
         ResultActions response = mockMvc.perform(post("/v1/patron")
@@ -73,7 +73,8 @@ public class PatronControllerTests {
                 .address("cairo")
                 .build();
 
-        FindPatronByIdResponseBody responseBody = FindPatronByIdResponseBody.builder()
+        PatronDto responseBody = PatronDto.builder()
+                .id(patronId)
                 .name(patron.getName())
                 .email(patron.getEmail())
                 .phone(patron.getPhone())

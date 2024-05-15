@@ -39,11 +39,11 @@ public class PatronServiceImplTests {
                 .thenReturn(patron);
 
         //Act
-        Long patronId = patronServiceImpl.add(patron);
+        Patron patronFromDb = patronServiceImpl.add(patron);
 
         //Assert
-        Assertions.assertThat(patronId).isNotNull();
-        Assertions.assertThat(patronId).isGreaterThan(0L);
+        Assertions.assertThat(patronFromDb).isNotNull();
+        Assertions.assertThat(patronFromDb.getId()).isGreaterThan(0L);
     }
 
 

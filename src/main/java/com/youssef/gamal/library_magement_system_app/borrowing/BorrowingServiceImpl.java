@@ -25,17 +25,11 @@ public class BorrowingServiceImpl implements BorrowingServiceInterface {
     private static final int BOOK_DELIVERY_FEES_PER_DAY = 10;
 
     @Override
-    public void borrowBook(Long bookId, Long patronId, LocalDate dateMustReturnIn) {
+    public Borrowing borrowBook(Long bookId, Long patronId, LocalDate dateMustReturnIn) {
         Book book = bookServiceInterface.findById(bookId);
         Patron patron = patronServiceInterface.findById(patronId);
 
         Borrowing borrowing = Borrowing.builder()
-                .borrowingCompositeKey(
-                        BorrowingCompositeKey.builder()
-                                .bookId(bookId)
-                                .patronId(patronId)
-                                .build()
-                )
                 .book(book)
                 .patron(patron)
                 .borrowingDate(LocalDate.now())
@@ -43,18 +37,16 @@ public class BorrowingServiceImpl implements BorrowingServiceInterface {
                 .actualReturnDate(null)
                 .build();
 
-        borrowingRepo.save(borrowing);
+        return borrowingRepo.save(borrowing);
     }
 
     @Override
-    public int returnBook(Long bookId, Long patronId, LocalDate actualReturnDate) {
-        BorrowingCompositeKey borrowingId = BorrowingCompositeKey.builder()
-                .bookId(bookId)
-                .patronId(patronId)
-                .build();
+    public Borrowing returnBook(Long bookId, Long patronId, LocalDate actualReturnDate) {
+        Book book = bookServiceInterface.findById(bookId);
+        Patron patron = patronServiceInterface.findById(patronId);
 
-        Borrowing borrowing = borrowingRepo.findById(borrowingId)
-                .orElseThrow();
+        Borrowing borrowing = borrowingRepo.findBorrowingByPatronAndBook(patron,book)
+                        .orElseThrow();
 
         borrowing.setActualReturnDate(actualReturnDate);
         borrowingRepo.save(borrowing);
@@ -66,6 +58,9 @@ public class BorrowingServiceImpl implements BorrowingServiceInterface {
             delayFeesMustBePaid = delayDays * BOOK_DELIVERY_FEES_PER_DAY;
         }
 
-        return delayFeesMustBePaid;
+        borrowing.setPaidFeesAmount(delayFeesMustBePaid);
+        borrowing = borrowingRepo.save(borrowing);
+
+        return borrowing;
     }
 }

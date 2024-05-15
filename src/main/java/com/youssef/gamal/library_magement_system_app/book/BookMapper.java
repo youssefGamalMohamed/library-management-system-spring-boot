@@ -1,52 +1,31 @@
 package com.youssef.gamal.library_magement_system_app.book;
 
+import java.time.LocalDate;
+import java.time.Year;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class BookMapper {
 
-    public static Book toEntity(AddBookRequestBody requestBody) {
+    public static Book toEntity(BookDto bookDto) {
         return Book.builder()
-                .title(requestBody.getTitle())
-                .description(requestBody.getDescription())
-                .publicationYear(requestBody.getPublicationYear())
-                .isbn(requestBody.getIsbn())
-                .author(requestBody.getAuthor())
+                .id(bookDto.getId())
+                .title(bookDto.getTitle())
+                .description(bookDto.getDescription())
+                .publicationYear(bookDto.getPublicationYear())
+                .isbn(bookDto.getIsbn())
+                .author(bookDto.getAuthor())
                 .build();
     }
 
-    public static Book toEntity(UpdateBookRequestBody requestBody) {
-        return Book.builder()
-                .title(requestBody.getTitle())
-                .description(requestBody.getDescription())
-                .publicationYear(requestBody.getPublicationYear())
-                .isbn(requestBody.getIsbn())
-                .author(requestBody.getAuthor())
-                .build();
-    }
-    public static AddBookResponseBody toAddBookResponseBody(Long bookId) {
-        return AddBookResponseBody.builder()
-                .id(bookId)
-                .build();
-    }
-
-    public static FindBookByIdResponseBody toFindBookByIdResponseBody(Book book) {
-        return FindBookByIdResponseBody.builder()
+    public static BookDto toDto(Book book) {
+        return BookDto.builder()
+                .id(book.getId())
                 .title(book.getTitle())
                 .description(book.getDescription())
-                .publicationYear(book.getPublicationYear().toString())
+                .publicationYear(book.getPublicationYear())
                 .isbn(book.getIsbn())
                 .author(book.getAuthor())
-                .build();
-    }
-
-    public static FindAllBooksResponseBody toFindAllBooksResponseBody(List<Book> books) {
-        return FindAllBooksResponseBody.builder()
-                .books(
-                    books.stream()
-                        .map(BookMapper::toFindBookByIdResponseBody)
-                        .collect(Collectors.toList())
-                )
                 .build();
     }
 }

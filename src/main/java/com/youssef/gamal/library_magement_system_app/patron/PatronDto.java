@@ -1,5 +1,6 @@
 package com.youssef.gamal.library_magement_system_app.patron;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -9,11 +10,16 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class AddPatronRequestBody {
+@Schema(name = "Patron", description = "Patron Model")
+@JsonInclude(JsonInclude.Include.NON_NULL) // Ignore null values during serialization
+public class PatronDto {
+
+    private Long id;
 
     @NotBlank(message = "Name is Required And Not Null")
     private String name;

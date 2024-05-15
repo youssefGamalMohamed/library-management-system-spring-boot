@@ -50,7 +50,7 @@ public class BookServiceImplTests {
                 .thenReturn(book);
 
         //Act
-        Long bookId = bookServiceImpl.save(book);
+        Long bookId = bookServiceImpl.save(book).getId();
 
         //Assert
         Assertions.assertThat(bookId).isNotNull();

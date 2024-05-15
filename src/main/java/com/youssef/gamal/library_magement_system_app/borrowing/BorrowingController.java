@@ -1,6 +1,5 @@
 package com.youssef.gamal.library_magement_system_app.borrowing;
 
-import com.youssef.gamal.library_magement_system_app.book.AddBookResponseBody;
 import com.youssef.gamal.library_magement_system_app.exceptions.ErrorValidationResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -28,7 +27,13 @@ public class BorrowingController {
     @ApiResponses(
             value = {
                     @ApiResponse(
-                            responseCode = "200", description = "Borrow Added Successfully"
+                            responseCode = "200", description = "Borrow Added Successfully",
+                            content = {
+                                    @Content(
+                                            mediaType = "application/json",
+                                            schema = @Schema(implementation = BorrowingDto.class)
+                                    )
+                            }
                     ),
                     @ApiResponse(
                             responseCode = "400", description = "Validation Error",
@@ -48,11 +53,12 @@ public class BorrowingController {
     @PostMapping("/borrow/{bookId}/patron/{patronId}")
     public ResponseEntity<?> borrowBook(@PathVariable  Long bookId,
                                     @PathVariable  Long patronId,
-                                    @Valid @RequestBody BorrowingRequestBody requestBody) {
-
-        borrowingServiceInterface.borrowBook(bookId, patronId, requestBody.getDateMustReturnIn());
+                                    @Valid @RequestBody BorrowingDto requestBody) {
+        
+        Borrowing borrowing = borrowingServiceInterface.borrowBook(bookId, patronId, requestBody.getDateMustReturnIn());
+        BorrowingDto responseBody = BorrowingMapper.toDto(borrowing);
         return ResponseEntity.ok()
-                .build();
+                .body(responseBody);
     }
 
 
@@ -61,13 +67,7 @@ public class BorrowingController {
     @ApiResponses(
             value = {
                     @ApiResponse(
-                            responseCode = "200", description = "Book Returned Successfully",
-                            content = {
-                                    @Content(
-                                            mediaType = "application/json",
-                                            schema = @Schema(implementation = ReturnBookResponseBody.class)
-                                    )
-                            }
+                            responseCode = "200", description = "Book Returned Successfully"
                     ),
                     @ApiResponse(
                             responseCode = "400", description = "Validation Error",
@@ -86,16 +86,12 @@ public class BorrowingController {
 
     @PutMapping("/return/{bookId}/patron/{patronId}")
     public ResponseEntity<?> returnBook(@PathVariable  Long bookId,
-                                        @PathVariable  Long patronId,
-                                        @Valid @RequestBody ReturnBookRequestBody requestBody) {
+                                        @PathVariable  Long patronId) {
 
-        LocalDate returnDate = requestBody.getReturnDate();
+        LocalDate returnDate = LocalDate.now();
 
-        int delayFeesMustBePaid = borrowingServiceInterface.returnBook(bookId, patronId, returnDate);
-
-        ReturnBookResponseBody responseBody = ReturnBookResponseBody.builder()
-                .delayFeesMustBePaid(delayFeesMustBePaid)
-                .build();
+        Borrowing borrowing = borrowingServiceInterface.returnBook(bookId, patronId, returnDate);
+        BorrowingDto responseBody = BorrowingMapper.toDto(borrowing);
 
         return ResponseEntity.ok()
                 .body(responseBody);
