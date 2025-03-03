@@ -9,6 +9,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,6 +22,7 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/v1/book")
 @AllArgsConstructor
+@Slf4j
 public class BookController {
 
 
@@ -142,6 +145,7 @@ public class BookController {
     public ResponseEntity<?> updateById(@PathVariable Long id, @Valid @RequestBody BookDto requestBody) {
         Book book = BookMapper.toEntity(requestBody);
         Book updatedBook = bookServiceInterface.updateById(id, book);
+        log.info("Book Updated Successfully with Updated Data = {}", updatedBook);
         return ResponseEntity.noContent()
                 .build();
     }

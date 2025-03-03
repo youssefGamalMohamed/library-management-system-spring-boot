@@ -1,15 +1,19 @@
 package com.youssef.gamal.library_magement_system_app.logging;
 
-import org.apache.catalina.util.StringUtil;
+import java.io.IOException;
+
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.zalando.logbook.*;
+import org.zalando.logbook.Correlation;
+import org.zalando.logbook.HttpLogFormatter;
+import org.zalando.logbook.HttpRequest;
+import org.zalando.logbook.HttpResponse;
+import org.zalando.logbook.Logbook;
+import org.zalando.logbook.Precorrelation;
 import org.zalando.logbook.core.DefaultHttpLogFormatter;
 import org.zalando.logbook.core.DefaultHttpLogWriter;
 import org.zalando.logbook.core.DefaultSink;
-import org.zalando.logbook.core.StreamHttpLogWriter;
-import java.io.IOException;
 
 @Configuration
 public class LoggingConfig {
