@@ -2,6 +2,8 @@ package com.youssef.gamal.library_magement_system_app.logging;
 
 import java.io.IOException;
 
+import javax.annotation.Nonnull;
+
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -39,13 +41,13 @@ public class LoggingConfig {
 
 
          @Override
-         public String format(Precorrelation precorrelation, HttpRequest request) throws IOException {
+         public String format(@Nonnull Precorrelation precorrelation, @Nonnull HttpRequest request) throws IOException {
              return  "\n" + Strings.repeat("=", 200) + "\n" +
                       "REQUEST >>> \n" + delegate.format(precorrelation, request) + "\n";
          }
 
          @Override
-         public String format(Correlation correlation, HttpResponse response) throws IOException {
+         public String format(@Nonnull Correlation correlation, @Nonnull HttpResponse response) throws IOException {
              return "\n" + "RESPONSE >>> \n" + delegate.format(correlation, response) +  "\n" + Strings.repeat("=", 200) + "\n" ;
 
          }
