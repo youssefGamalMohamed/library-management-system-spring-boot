@@ -71,7 +71,7 @@ public class PatronController {
             }
     )
     @GetMapping("/{id}")
-    public ResponseEntity<?> findById(@PathVariable Long id) {
+    public ResponseEntity<?> findById(@PathVariable("id") Long id) {
         Patron patron = patronServiceInterface.findById(id);
         PatronDto responseBody = PatronMapper.toDto(patron);
         return ResponseEntity.ok(responseBody);

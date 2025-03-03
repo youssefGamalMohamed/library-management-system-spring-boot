@@ -75,7 +75,7 @@ public class BookController {
     )
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> findById(@PathVariable Long id) {
+    public ResponseEntity<?> findById(@PathVariable("id") Long id) {
         Book book = bookServiceInterface.findById(id);
         BookDto responseBody = BookMapper.toDto(book);
         return new ResponseEntity<>(responseBody, HttpStatus.OK);

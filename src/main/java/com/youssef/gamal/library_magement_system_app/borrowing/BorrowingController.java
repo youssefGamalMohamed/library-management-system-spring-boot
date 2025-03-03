@@ -51,8 +51,8 @@ public class BorrowingController {
     )
 
     @PostMapping("/borrow/{bookId}/patron/{patronId}")
-    public ResponseEntity<?> borrowBook(@PathVariable  Long bookId,
-                                    @PathVariable  Long patronId,
+    public ResponseEntity<?> borrowBook(@PathVariable("bookId")  Long bookId,
+                                    @PathVariable("patronId")  Long patronId,
                                     @Valid @RequestBody BorrowingDto requestBody) {
         
         Borrowing borrowing = borrowingServiceInterface.borrowBook(bookId, patronId, requestBody.getDateMustReturnIn());
@@ -85,8 +85,8 @@ public class BorrowingController {
     )
 
     @PutMapping("/return/{bookId}/patron/{patronId}")
-    public ResponseEntity<?> returnBook(@PathVariable  Long bookId,
-                                        @PathVariable  Long patronId) {
+    public ResponseEntity<?> returnBook(@PathVariable("bookId")  Long bookId,
+                                        @PathVariable("patronId")  Long patronId) {
 
         LocalDate returnDate = LocalDate.now();
 
