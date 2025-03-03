@@ -1,39 +1,23 @@
 package com.youssef.gamal.library_magement_system_app.borrowing;
 
-import com.youssef.gamal.library_magement_system_app.book.Book;
-import com.youssef.gamal.library_magement_system_app.book.BookRepo;
-import com.youssef.gamal.library_magement_system_app.book.BookServiceImpl;
-import com.youssef.gamal.library_magement_system_app.patron.Patron;
-import com.youssef.gamal.library_magement_system_app.patron.PatronRepo;
-import com.youssef.gamal.library_magement_system_app.patron.PatronServiceImpl;
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 
-import static org.junit.jupiter.api.Assertions.*;
+import java.time.LocalDate;
+import java.time.Year;
 
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 
-import java.time.LocalDate;
-import java.time.Year;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.when;
+import com.youssef.gamal.library_magement_system_app.book.Book;
+import com.youssef.gamal.library_magement_system_app.book.BookServiceImpl;
+import com.youssef.gamal.library_magement_system_app.patron.Patron;
+import com.youssef.gamal.library_magement_system_app.patron.PatronServiceImpl;
 
 @ExtendWith(MockitoExtension.class)
 public class BorrowingServiceImplTest {
